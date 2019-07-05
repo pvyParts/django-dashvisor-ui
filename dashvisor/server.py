@@ -1,19 +1,18 @@
-from xmlrpclib import ServerProxy, Fault
+from collections import OrderedDict
 from urlparse import urlparse
-
-from django.utils.datastructures import SortedDict
-
+from xmlrpclib import ServerProxy, Fault
 
 
 class Server(object):
     def __init__(self, connection_string, id):
         self.name = urlparse(connection_string).hostname
         self.connection = ServerProxy(connection_string)
-        self.status = SortedDict()
+        self.status = OrderedDict()
         self.id = id
 
     def refresh(self):
-        self.status = SortedDict(("%s:%s" % (i['group'], i['name']), i) for i in self.connection.supervisor.getAllProcessInfo())
+        self.status = OrderedDict(("%s:%s" % (i['group'], i['name']), i)
+                                  for i in self.connection.supervisor.getAllProcessInfo())
         for key, program in self.status.items():
             program['id'] = key
             program['human_name'] = program['name']

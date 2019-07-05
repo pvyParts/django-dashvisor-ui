@@ -1,13 +1,14 @@
+from collections import OrderedDict
+
 from django.conf import settings
-from django.utils.datastructures import SortedDict
 
 from dashvisor.server import Server
+from dashvisor.backends.base import BackendBase
 
 
-
-class Backend(object):
-    def __init__(self):
-        self.servers = SortedDict()
+class Backend(BackendBase):
+    def __init__(self, request):
+        super(Backend, self).__init__(request)
         fp = open(settings.DASHVISOR_CONFIG_FILE)
         index = 0
         for line in fp.xreadlines():
@@ -16,9 +17,3 @@ class Backend(object):
             self.servers[id] = server
             index += 1
         fp.close()
-
-    def refresh(self):
-        for s in self.servers.values():
-            s.refresh()
-
-

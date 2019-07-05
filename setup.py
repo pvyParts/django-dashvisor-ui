@@ -20,6 +20,7 @@ setup(
     license='BSD',
     keywords='supervisor dashboard remote control'.split(),
     platforms='any',
+    package=['dashvisor'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
