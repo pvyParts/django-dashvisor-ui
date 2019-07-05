@@ -76,10 +76,10 @@
                 row += "<td>" + program["description"] + "</td>";
                 if (program['state'] == "{{ constants.running }}") {
                     row += "<td>start</td>";
-                    row += "<td><a href='#' onClick=control_program(" + id + ",'" + program['id'] + "','stop')>stop</a></td>";
-                    row += "<td><a href='#' onClick=control_program(" + id + ",'" + program['id'] + "','restart')>restart</a></td>";
+                    row += "<td><a href='#' onClick=control_program('" + id + "','" + program['id'] + "','stop')>stop</a></td>";
+                    row += "<td><a href='#' onClick=control_program('" + id + "','" + program['id'] + "','restart')>restart</a></td>";
                 } else {
-                    row += "<td><a href='#' onClick=control_program(" + id + ",'" + program['id'] + "','start')>start</a></td>";
+                    row += "<td><a href='#' onClick=control_program('" + id + "','" + program['id'] + "','start')>start</a></td>";
                     row += "<td>stop</td>";
                     row += "<td>restart</td>";
                 }
