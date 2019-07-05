@@ -1,0 +1,26 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'dashvisor/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dashvisor/css/dataTables.bootstrap4.min.css' %}">
+
+    <title>{% block title %}Supervisor{% endblock %}</title>
+</head>
+<body>
+{% block content %}{% endblock %}
+{% block javascript %}
+<script src="{% static 'dashvisor/js/jquery.min.js' %}" type="application/javascript"></script>
+<script src="{% static 'dashvisor/js/bootstrap.min.js' %}" type="application/javascript"></script>
+<script src="{% static 'dashvisor/js/popper.min.js' %}" type="application/javascript"></script>
+<script src="{% static 'dashvisor/js/jquery.dataTables.min.js' %}" type="application/javascript"></script>
+<script src="{% static 'dashvisor/js/dataTables.bootstrap4.min.js' %}" type="application/javascript"></script>
+{% endblock %}
+
+</body>
+</html>

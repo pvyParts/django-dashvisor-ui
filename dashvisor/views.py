@@ -45,14 +45,15 @@ def query(request):
     server_id = request.GET['server']
     server = backend.servers[server_id]
     action = request.GET['action']
-    response_dict = {}
+    data = {'data': []}
     if action == 'refresh':
         server.refresh()
-        response_dict['status'] = server.status.values()
-        response_dict['status'].sort(key=lambda x: (x['group'], x['name']))
-        response_dict['server'] = {'name': server.name, 'id': server_id}
+        status = server.status.values()
+        status.sort(key=lambda x: (x['group'], x['name']))
+        for process in status:
+            process['server_name'] = "{0.name} ({0.id})".format(server)
+        data['data'].extend(status)
     if action in ('start', 'stop', 'restart'):
         program = request.GET['program']
         getattr(server, action)(program)
-
-    return JsonResponse(response_dict)
+    return JsonResponse(data, safe=False)
