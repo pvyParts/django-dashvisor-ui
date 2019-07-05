@@ -21,6 +21,7 @@ def dashboard(request):
         {
             'servers': backend.servers,
             'query_url': reverse('dashvisor_query'),
+            'base_path': reverse("dashvisor_dashboard"),
             'constants': {
                 'stopped': 0,
                 'running': 20,
@@ -35,8 +36,10 @@ def control(request, server, process, action):
     if action not in ('start', 'stop', 'restart'):
         raise Http404
 
-    getattr(backend.servers[server], action)(process)
-    return HttpResponseRedirect(reverse('dashvisor_dashboard'))
+    result = getattr(backend.servers[server], action)(process)
+    return JsonResponse({
+        'status': result
+    })
 
 
 def query(request):
@@ -52,6 +55,7 @@ def query(request):
         status.sort(key=lambda x: (x['group'], x['name']))
         for process in status:
             process['server_name'] = "{0.name} ({0.id})".format(server)
+            process['server_id'] = server_id
         data['data'].extend(status)
     if action in ('start', 'stop', 'restart'):
         program = request.GET['program']
