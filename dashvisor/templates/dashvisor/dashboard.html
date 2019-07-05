@@ -31,15 +31,9 @@
                 processing: true,
                 serverSide: false,
                 "initComplete": function( settings, json ) {
-                    $("button[data-action='start']").supervisor({
+                    $("button.action").supervisor({
                         url: control_url
-                    }).action();
-                    $("button[data-action='stop']").supervisor({
-                        url: control_url
-                    }).action();
-                    $("button[data-action='restart']").supervisor({
-                        url: control_url
-                    }).action();
+                    })
                 },
                 ajax: {
                     url: "{{ query_url }}",
@@ -67,19 +61,19 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='start' data-server='" + row.server_id + "' data-process='" + row.id + "' class='btn btn-primary'>Start</button>"
+                            return "<button data-action='start' data-server='" + row.server_id + "' data-process='" + row.id + "' class='btn btn-primary action'>Start</button>"
                         },
                         "targets": action_index
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='stop' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-danger'>Stop</button>"
+                            return "<button data-action='stop' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-danger action'>Stop</button>"
                         },
                         "targets": action_index + 1
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='restart' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-warning'>Restart</button>"
+                            return "<button data-action='restart' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-warning action'>Restart</button>"
                         },
                         "targets": action_index + 2
                     },

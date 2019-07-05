@@ -13,26 +13,28 @@
         this.$ele.click(function () {
             $.ajax({
                 url: self.config.url + server + "/" + process + "/" + action + "/",
-                cache: false
+                cache: false,
+                beforeSend: function (xhr) {
+                    self.before_action(xhr, action)
+                }
             }).done(function (data) {
-                self['on_' + action](data);
+                self.after_action(data, action);
             })
         })
     };
-
-    Supervisor.prototype.on_start = function (data) {
-
-    };
-
-    Supervisor.prototype.on_stop = function (data) {
+    Supervisor.prototype.before_action = function (xhr, action) {
 
     };
 
-    Supervisor.prototype.on_restart = function (data) {
+    Supervisor.prototype.after_action = function (data, action) {
+
     };
 
     $.fn.supervisor = function (config) {
-        return new Supervisor(this, config || {});
+        return this.each(function () {
+            var supervisor = new Supervisor($(this), config || {});
+            $.proxy(supervisor.action, supervisor)();
+        });
     };
 
 }(jQuery));
