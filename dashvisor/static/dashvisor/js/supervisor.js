@@ -7,34 +7,36 @@
 
     Supervisor.prototype.action = function () {
         var self = this;
-        var server = this.$ele.attr("data-server");
-        var action = this.$ele.attr("data-action");
-        var process = this.$ele.attr('data-process');
-        this.$ele.click(function () {
-            $.ajax({
-                url: self.config.url + server + "/" + process + "/" + action + "/",
-                cache: false,
-                beforeSend: function (xhr) {
-                    self.before_action(xhr, action)
-                }
-            }).done(function (data) {
-                self.after_action(data, action);
-            })
-        })
+        self.$ele.each(function () {
+            var $btn = $(this);
+            var server = $btn.attr("data-server");
+            var action = $btn.attr("data-action");
+            var process = $btn.attr('data-process');
+            $btn.click(function () {
+                $.ajax({
+                    url: self.config.url + server + "/" + process + "/" + action + "/",
+                    cache: false,
+                    beforeSend: function (xhr) {
+                        self.before_action($btn, xhr, action)
+                    }
+                }).done(function (data) {
+                    self.after_action($btn, data, action);
+                })
+            });
+        });
+        return this;
     };
-    Supervisor.prototype.before_action = function (xhr, action) {
 
+    Supervisor.prototype.before_action = function ($ele, xhr, action) {
+        $ele.attr("disabled", "disabled")
     };
 
-    Supervisor.prototype.after_action = function (data, action) {
-
+    Supervisor.prototype.after_action = function ($ele, data, action) {
+        $ele.removeAttr("disabled")
     };
 
     $.fn.supervisor = function (config) {
-        return this.each(function () {
-            var supervisor = new Supervisor($(this), config || {});
-            $.proxy(supervisor.action, supervisor)();
-        });
+        return new Supervisor($(this), config || {})
     };
 
 }(jQuery));
