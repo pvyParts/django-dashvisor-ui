@@ -36,7 +36,7 @@ def control(request, server, process, action):
         raise Http404
 
     getattr(backend.servers[server], action)(process)
-    return HttpResponseRedirect('/')  # TODO url reverse
+    return HttpResponseRedirect(reverse('dashvisor_dashboard'))
 
 
 def query(request):
