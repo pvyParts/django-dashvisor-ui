@@ -61,6 +61,13 @@
                     },
                     {
                         "render": function ( data, type, row ) {
+                            var state = {"RUNNING": 'primary', 'STOPPED': 'danger', 'STARTING': 'warning'};
+                            return '<p class="text-' + state[data] + '">' + data + '</p>'
+                        },
+                        "targets": 3
+                    },
+                    {
+                        "render": function ( data, type, row ) {
                             return "<button data-action='start' data-server='" + row.server_id + "' data-process='" + row.id + "' class='btn btn-primary action'>Start</button>"
                         },
                         "targets": action_index
