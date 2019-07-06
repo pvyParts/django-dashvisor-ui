@@ -33,12 +33,12 @@ def dashboard(request):
 def control(request, server, process, action):
     backend = get_backend(request)
 
-    if action not in ('start', 'stop', 'restart'):
+    if action not in ('start', 'stop', 'restart', 'tail'):
         raise Http404
 
     result = getattr(backend.servers[server], action)(process)
     return JsonResponse({
-        'status': result
+        'result': result
     })
 
 

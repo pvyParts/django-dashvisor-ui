@@ -27,6 +27,12 @@ class Server(object):
                 return False
             raise
 
+    def tail(self, name):
+        try:
+            return self.connection.supervisor.tailProcessStdoutLog(name, -1, 2048)
+        except Fault as e:
+            raise
+
     def start(self, name):
         try:
             return self.connection.supervisor.startProcess(name)

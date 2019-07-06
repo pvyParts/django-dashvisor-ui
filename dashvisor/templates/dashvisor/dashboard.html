@@ -33,6 +33,10 @@
                 "initComplete": function( settings, json ) {
                     $("button.action").supervisor({
                         url: control_url
+                    }).action();
+
+                    $("a.tail").supervisor({
+                        url: control_url
                     }).action()
                 },
                 ajax: {
@@ -55,7 +59,11 @@
                     { "visible": false,  "targets": 0 },
                     {
                         "render": function ( data, type, row ) {
-                            return '<a href="#" data-toggle="tooltip" title="'+ row.human_name + '">'+ data + '</a>'
+                            return '<a href="#" class="tail" data-action="tail" data-toggle="tooltip"' +
+                                'title="'+ row.human_name + '"' +
+                                'data-server="' + row.server_id + '"' +
+                                'data-process="' + row.id + '">' + data +
+                                '</a>'
                         },
                         "targets": 2
                     },
