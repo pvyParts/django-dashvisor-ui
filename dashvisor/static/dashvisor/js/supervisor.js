@@ -27,12 +27,38 @@
         return this;
     };
 
+
+    Supervisor.prototype.before_command = function ($ele, xhr, action) {
+        $ele.attr("disabled", "disabled");
+    };
+
+    Supervisor.prototype.after_command = function ($ele, xhr, action) {
+        $ele.removeAttr("disabled")
+    };
+
+    Supervisor.prototype.before_tail = function ($ele, xhr) {
+        this.config.screen.find(".modal-body").empty();
+        this.config.screen.modal("show");
+    };
+
+    Supervisor.prototype.after_tail = function ($ele, data) {
+        this.config.screen.find(".modal-body").html("<pre>" + data.result[0] + "</pre>");
+    };
+
     Supervisor.prototype.before_action = function ($ele, xhr, action) {
-        $ele.attr("disabled", "disabled")
+        if (['start', 'stop', 'restart'].indexOf(action) !== -1) {
+            this.before_command($ele, xhr, action);
+        } else if (action === 'tail') {
+            this.before_tail($ele, xhr);
+        }
     };
 
     Supervisor.prototype.after_action = function ($ele, data, action) {
-        $ele.removeAttr("disabled")
+        if (['start', 'stop', 'restart'].indexOf(action) !== -1) {
+            this.after_command($ele, data, action);
+        } else if (action === 'tail') {
+            this.after_tail($ele, data);
+        }
     };
 
     $.fn.supervisor = function (config) {

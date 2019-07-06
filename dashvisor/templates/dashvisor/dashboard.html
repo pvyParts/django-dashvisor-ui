@@ -16,8 +16,8 @@
             </thead>
         </table>
     </div>
+{% include 'dashvisor/modal.html' %}
 {% endblock %}
-
 {% block javascript %}
     {{ block.super }}
     <script type="application/javascript" src="{% static 'dashvisor/js/supervisor.js' %}"></script>
@@ -36,7 +36,8 @@
                     }).action();
 
                     $("a.tail").supervisor({
-                        url: control_url
+                        url: control_url,
+                        screen: $('#supervisor-modal')
                     }).action()
                 },
                 ajax: {
