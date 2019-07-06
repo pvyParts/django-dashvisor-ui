@@ -2,24 +2,22 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
-from dashvisor.backends import Backend
+from dashvisor.backends import backend
 
 
 def get_backend(request):
-    backend = request.session.get('backend')
-    if backend is None:
-        backend = Backend(request)
-        backend.refresh()
-        request.session.backend = backend
+    if backend.request is None:
+        backend(request)
     return backend
 
 
 def dashboard(request):
-    backend = get_backend(request)
+    _backend = get_backend(request)
+    _backend.refresh()
     return render_to_response(
         'dashvisor/dashboard.html',
         {
-            'servers': backend.servers,
+            'servers': _backend.servers,
             'query_url': reverse('dashvisor_query'),
             'base_path': reverse("dashvisor_dashboard"),
             'constants': {
@@ -31,7 +29,7 @@ def dashboard(request):
 
 
 def control(request, server, process, action):
-    backend = get_backend(request)
+    _backend = get_backend(request)
 
     if action not in ('start', 'stop', 'restart', 'tail'):
         raise Http404
@@ -43,10 +41,10 @@ def control(request, server, process, action):
 
 
 def query(request):
-    backend = get_backend(request)
+    _backend = get_backend(request)
 
     server_id = request.GET['server']
-    server = backend.servers[server_id]
+    server = _backend.servers[server_id]
     action = request.GET['action']
     data = {'data': []}
     if action == 'refresh':
