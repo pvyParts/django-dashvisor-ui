@@ -8,19 +8,19 @@
     Supervisor.prototype.action = function () {
         var self = this;
         self.$ele.each(function () {
-            var $btn = $(this);
-            var server = $btn.attr("data-server");
-            var action = $btn.attr("data-action");
-            var process = $btn.attr('data-process');
-            $btn.click(function () {
+            var $ele = $(this);
+            var server = $ele.attr("data-server");
+            var action = $ele.attr("data-action");
+            var process = $ele.attr('data-process');
+            $ele.click(function () {
                 $.ajax({
                     url: self.config.url + server + "/" + process + "/" + action + "/",
                     cache: false,
                     beforeSend: function (xhr) {
-                        self.before_action($btn, xhr, action)
+                        self.before_action($ele, xhr, action)
                     }
                 }).done(function (data) {
-                    self.after_action($btn, data, action);
+                    self.after_action($ele, data, action);
                 })
             });
         });

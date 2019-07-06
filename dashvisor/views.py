@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
 from dashvisor.backends import Backend

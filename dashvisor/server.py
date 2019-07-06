@@ -27,9 +27,11 @@ class Server(object):
                 return False
             raise
 
-    def tail(self, name):
+    def tail(self, name, length=None):
+        if length is None:
+            length = 2048
         try:
-            return self.connection.supervisor.tailProcessStdoutLog(name, -1, 2048)
+            return self.connection.supervisor.tailProcessLog(name, -1, length)
         except Fault as e:
             raise
 
