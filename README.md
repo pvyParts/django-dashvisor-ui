@@ -1,0 +1,2 @@
+# django-dashvisor
+Supervisor dashboard
