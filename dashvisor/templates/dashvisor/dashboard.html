@@ -51,8 +51,8 @@
                     }
                 },
                 columns: [
-                    {"data": "server_id"},
-                    {"data": "server_name"},
+                    {"data": "server.id"},
+                    {"data": "server.name"},
                     {"data": "name"},
                     {"data": 'statename'},
                 ],
@@ -62,7 +62,7 @@
                         "render": function ( data, type, row ) {
                             return '<a href="#" class="tail" data-action="tail" data-toggle="tooltip"' +
                                 'title="'+ row.human_name + '"' +
-                                'data-server="' + row.server_id + '"' +
+                                'data-server="' + row.server.id + '"' +
                                 'data-process="' + row.id + '">' + data +
                                 '</a>'
                         },
@@ -77,19 +77,19 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='start' data-server='" + row.server_id + "' data-process='" + row.id + "' class='btn btn-primary action'>Start</button>"
+                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary action'>Start</button>"
                         },
                         "targets": action_index
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='stop' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-danger action'>Stop</button>"
+                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger action'>Stop</button>"
                         },
                         "targets": action_index + 1
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='restart' data-server='" + row.server_id + "' data-process='" + row.id + "'class='btn btn-warning action'>Restart</button>"
+                            return "<button data-action='restart' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-warning action'>Restart</button>"
                         },
                         "targets": action_index + 2
                     },

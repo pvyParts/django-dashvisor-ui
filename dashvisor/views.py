@@ -52,8 +52,10 @@ def query(request):
         status = server.status.values()
         status.sort(key=lambda x: (x['group'], x['name']))
         for process in status:
-            process['server_name'] = "{0.name} ({0.id})".format(server)
-            process['server_id'] = server_id
+            process['server'] = {
+                'name': "{0.name} ({0.id})".format(server),
+                'id': server_id
+            }
         data['data'].extend(status)
     if action in ('start', 'stop', 'restart'):
         program = request.GET['program']
