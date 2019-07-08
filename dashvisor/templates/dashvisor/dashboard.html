@@ -68,20 +68,20 @@
                     {
                         "render": function ( data, type, row ) {
                             var btn_state = $.fn.Supervisor.isRunningState(row.statename) ?  'disabled': '';
-                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary action' " + btn_state + ">Start</button>"
+                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary btn-sm action' " + btn_state + ">start</button>"
                         },
                         "targets": action_index
                     },
                     {
                         "render": function ( data, type, row ) {
                             var btn_state = $.fn.Supervisor.isStoppedState(row.statename) ? 'disabled': '';
-                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger action' " + btn_state + ">Stop</button>"
+                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger btn-sm action' " + btn_state + ">stop</button>"
                         },
                         "targets": action_index + 1
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='restart' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-warning action'>Restart</button>"
+                            return "<button data-action='restart' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-warning btn-sm action'>restart</button>"
                         },
                         "targets": action_index + 2
                     },
