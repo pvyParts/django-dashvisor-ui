@@ -3,6 +3,7 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
 from dashvisor.backends import backend
+from dashvisor.utils import login_admin_only_required
 
 
 def get_backend(request):
@@ -11,6 +12,7 @@ def get_backend(request):
     return backend
 
 
+@login_admin_only_required
 def dashboard(request):
     _backend = get_backend(request)
     _backend.refresh()
@@ -28,6 +30,7 @@ def dashboard(request):
     )
 
 
+@login_admin_only_required
 def control(request, server, process, action):
     _backend = get_backend(request)
 
@@ -40,6 +43,7 @@ def control(request, server, process, action):
     })
 
 
+@login_admin_only_required
 def query(request):
     _backend = get_backend(request)
 
