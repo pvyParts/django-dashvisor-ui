@@ -1,6 +1,21 @@
 from collections import OrderedDict
+from httplib import CannotSendRequest
 from urlparse import urlparse
 from xmlrpclib import ServerProxy, Fault
+
+
+class ExceptionHandler(object):
+    def __init__(self, exc):
+        self.exc = exc
+
+    def __call__(self, method):
+        def wrap(self_, *args_, **kwargs_):
+            try:
+                return method(self_, *args_, **kwargs_)
+            except self.exc:
+                return False
+
+        return wrap
 
 
 class Server(object):
@@ -10,6 +25,7 @@ class Server(object):
         self.status = OrderedDict()
         self.id = id
 
+    @ExceptionHandler(CannotSendRequest)
     def refresh(self):
         self.status = OrderedDict(("%s:%s" % (i['group'], i['name']), i)
                                   for i in self.connection.supervisor.getAllProcessInfo())
@@ -22,7 +38,7 @@ class Server(object):
     def stop(self, name):
         try:
             return self.connection.supervisor.stopProcess(name)
-        except Fault, e:
+        except Fault as e:
             if e.faultString.startswith('NOT_RUNNING'):
                 return False
             raise
@@ -38,7 +54,7 @@ class Server(object):
     def start(self, name):
         try:
             return self.connection.supervisor.startProcess(name)
-        except Fault, e:
+        except Fault as e:
             if e.faultString.startswith('ALREADY_STARTED'):
                 return False
             raise
