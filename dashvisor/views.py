@@ -48,25 +48,33 @@ def control(request, server, process, action):
     }, safe=False)
 
 
+def _get_server_status(request, server, action):
+    """get server status data"""
+    if action == 'refresh':
+        server.refresh()
+    status = server.status.values()
+    status.sort(key=lambda x: (x['group'], x['name']))
+    for process in status:
+        process['server'] = {
+            'name': "{0.name} ({0.id})".format(server),
+            'id': server.id
+        }
+    return status
+
+
 @login_admin_only_required
 def query(request):
     _backend = get_backend(request)
 
-    server_id = request.GET['server']
-    server = _backend.servers[server_id]
-    action = request.GET['action']
+    server_key = request.GET.get('server', '*')
+    action = request.GET.get('action')
     data = {'data': []}
-    if action == 'refresh':
-        server.refresh()
-        status = server.status.values()
-        status.sort(key=lambda x: (x['group'], x['name']))
-        for process in status:
-            process['server'] = {
-                'name': "{0.name} ({0.id})".format(server),
-                'id': server_id
-            }
+    if server_key == "*":
+        for server in _backend.servers.itervalues():
+            status = _get_server_status(request, server, action)
+            data['data'].extend(status)
+    else:
+        server = _backend.servers[server_key]
+        status = _get_server_status(request, server, action)
         data['data'].extend(status)
-    if action in ('start', 'stop', 'restart'):
-        program = request.GET['program']
-        getattr(server, action)(program)
     return JsonResponse(data, safe=False)

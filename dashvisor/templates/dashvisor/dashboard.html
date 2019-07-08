@@ -52,7 +52,7 @@
                     url: "{{ query_url }}",
                     data: function (data) {
                         $.extend(data, {
-                            'server': 'publique',
+                            'server': '*',
                             'action': 'refresh'
                         });
                         return data
