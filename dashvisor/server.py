@@ -45,7 +45,7 @@ class Server(object):
 
     def tail(self, name, length=None):
         if length is None:
-            length = 2048
+            length = 1024 * 5
         try:
             return self.connection.supervisor.tailProcessLog(name, -1, length)
         except Fault as e:
