@@ -10,13 +10,13 @@ except IOError:
     long_description = None
 
 setup(
-    name='django-dashvisor',
+    name='django-dashvisor-ui',
     version='1.0',
-    url="http://github.com/aleszoulek/django-dashvisor",
-    description='Supervisor dashboard',
+    url="https://github.com/alexsilva/django-dashvisor-ui",
+    description='Django Supervisor dashboard',
     long_description=long_description,
-    author='Ales Zoulek',
-    author_email='ales.zoulek@gmail.com',
+    author='Alex',
+    author_email='alex@fabricadigital.com.br',
     license='BSD',
     keywords='supervisor dashboard remote control'.split(),
     platforms='any',
