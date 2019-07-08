@@ -5,15 +5,18 @@ from xmlrpclib import ServerProxy, Fault
 
 
 class ExceptionHandler(object):
-    def __init__(self, exc):
+    def __init__(self, exc, defaults=None):
         self.exc = exc
+        if defaults is None:
+            defaults = False
+        self.defaults = defaults
 
     def __call__(self, method):
         def wrap(self_, *args_, **kwargs_):
             try:
                 return method(self_, *args_, **kwargs_)
             except self.exc:
-                return False
+                return self.defaults
 
         return wrap
 
@@ -35,6 +38,7 @@ class Server(object):
             if program['name'] != program['group']:
                 program['human_name'] = "%s:%s" % (program['group'], program['name'])
 
+    @ExceptionHandler(CannotSendRequest)
     def stop(self, name):
         try:
             return self.connection.supervisor.stopProcess(name)
@@ -43,6 +47,7 @@ class Server(object):
                 return False
             raise
 
+    @ExceptionHandler(CannotSendRequest, defaults=['', 0, False])
     def tail(self, name, length=None):
         if length is None:
             length = 1024 * 5
@@ -51,6 +56,7 @@ class Server(object):
         except Fault as e:
             raise
 
+    @ExceptionHandler(CannotSendRequest)
     def start(self, name):
         try:
             return self.connection.supervisor.startProcess(name)
