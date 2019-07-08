@@ -11,7 +11,7 @@ except IOError:
 
 setup(
     name='django-dashvisor',
-    version='0.1',
+    version='1.0',
     url="http://github.com/aleszoulek/django-dashvisor",
     description='Supervisor dashboard',
     long_description=long_description,
