@@ -3,6 +3,20 @@
     var Supervisor = function ($ele, config) {
         this.$ele = $ele;
         this.config = config;
+        $.extend(this.config, {screen_update: 5000})
+    };
+
+    Supervisor.prototype.do_action = function ($ele, server, action, process) {
+        var self = this;
+        $.ajax({
+            url: this.config.url + server + "/" + process + "/" + action + "/",
+            cache: false,
+            beforeSend: function (xhr) {
+                self.before_action($ele, xhr, action)
+            }
+        }).done(function (data) {
+            self.after_action($ele, data, action);
+        })
     };
 
     Supervisor.prototype.action = function () {
@@ -12,17 +26,7 @@
             var server = $ele.attr("data-server");
             var action = $ele.attr("data-action");
             var process = $ele.attr('data-process');
-            $ele.click(function () {
-                $.ajax({
-                    url: self.config.url + server + "/" + process + "/" + action + "/",
-                    cache: false,
-                    beforeSend: function (xhr) {
-                        self.before_action($ele, xhr, action)
-                    }
-                }).done(function (data) {
-                    self.after_action($ele, data, action);
-                })
-            });
+            $ele.click($.proxy(self.do_action, self, $ele, server, action, process));
         });
         return this;
     };
@@ -37,8 +41,23 @@
     };
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
-        this.config.screen.find(".modal-body").empty();
-        this.config.screen.modal("show");
+        if (!$ele.data("setIntervalID")) {
+            this.config.screen.find(".modal-body").empty();
+            this.config.screen.modal("show");
+
+            var server = $ele.attr("data-server");
+            var action = $ele.attr("data-action");
+            var process = $ele.attr('data-process');
+
+            $ele.data("setIntervalID",
+                setInterval($.proxy(this.do_action, this),
+                    this.config.screen_update, $ele, server, action, process));
+
+            this.config.screen.on('hide.bs.modal', function () {
+                clearInterval($ele.data("setIntervalID"));
+                clearInterval($ele.removeData("setIntervalID"))
+            })
+        }
     };
 
     Supervisor.prototype.after_tail = function ($ele, data) {
