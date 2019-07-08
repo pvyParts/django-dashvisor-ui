@@ -35,14 +35,19 @@
         return this;
     };
 
+    Supervisor.isRunningState = function(state) {
+        return ['starting', 'running'].indexOf(state.toLowerCase()) !== -1;
+    };
+
+    Supervisor.isStoppedState = function(state) {
+        return ['stopped', 'starting'].indexOf(state.toLowerCase()) !== -1;
+    };
 
     Supervisor.prototype.before_command = function ($ele, xhr, action) {
         $ele.attr("disabled", "disabled");
     };
 
-    Supervisor.prototype.after_command = function ($ele, xhr, action) {
-        $ele.removeAttr("disabled")
-    };
+    Supervisor.prototype.after_command = function ($ele, xhr, action) {};
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
         if (!$ele.data("setIntervalID")) {
@@ -93,6 +98,7 @@
         }
     };
 
+    $.fn.Supervisor = Supervisor;
     $.fn.supervisor = function (config) {
         return new Supervisor($(this), config || {})
     };

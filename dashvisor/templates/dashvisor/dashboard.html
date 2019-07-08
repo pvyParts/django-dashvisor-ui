@@ -67,13 +67,15 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary action'>Start</button>"
+                            var btn_state = $.fn.Supervisor.isRunningState(row.statename) ?  'disabled': '';
+                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary action' " + btn_state + ">Start</button>"
                         },
                         "targets": action_index
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger action'>Stop</button>"
+                            var btn_state = $.fn.Supervisor.isStoppedState(row.statename) ? 'disabled': '';
+                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger action' " + btn_state + ">Stop</button>"
                         },
                         "targets": action_index + 1
                     },
@@ -98,7 +100,7 @@
             table.on('init.dt', function () {
                 table_handlers();
             });
-            var autorefresh = $.urlParam('autorefresh', 5);
+            var autorefresh = parseInt($.urlParam('autorefresh', 5));
             if (autorefresh !== 0) {
                 setInterval( function () {
                     $('#supervisor').DataTable().ajax.reload(function (data) {
