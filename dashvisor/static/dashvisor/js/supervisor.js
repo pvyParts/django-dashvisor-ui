@@ -1,4 +1,8 @@
 (function ($) {
+    $.urlParam = function (name, _default) {
+        var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return (results && results[1]) || _default || 0;
+    };
 
     var Supervisor = function ($ele, config) {
         this.$ele = $ele;

@@ -27,19 +27,9 @@
         $(document).ready(function () {
             var control_url = '{{ base_path }}control/';
             var action_index = 4;
-            $('#supervisor').DataTable({
-                processing: true,
+            var table = $('#supervisor').DataTable({
+                processing: false,
                 serverSide: false,
-                "initComplete": function( settings, json ) {
-                    $("button.action").supervisor({
-                        url: control_url
-                    }).action();
-
-                    $("a.tail").supervisor({
-                        url: control_url,
-                        screen: $('#supervisor-modal')
-                    }).action()
-                },
                 ajax: {
                     url: "{{ query_url }}",
                     data: function (data) {
@@ -95,6 +85,27 @@
                     },
                 ]
             });
+            var table_handlers = function() {
+                $("button.action").supervisor({
+                    url: control_url
+                }).action();
+
+                $("a.tail").supervisor({
+                    url: control_url,
+                    screen: $('#supervisor-modal')
+                }).action()
+            };
+            table.on('init.dt', function () {
+                table_handlers();
+            });
+            var autorefresh = $.urlParam('autorefresh', 5);
+            if (autorefresh !== 0) {
+                setInterval( function () {
+                    $('#supervisor').DataTable().ajax.reload(function (data) {
+                        table_handlers();
+                    });
+                }, autorefresh * 1000);
+            }
         });
     </script>
 {% endblock %}
