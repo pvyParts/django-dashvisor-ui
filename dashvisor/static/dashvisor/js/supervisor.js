@@ -46,6 +46,7 @@
     Supervisor.prototype.before_command = function ($ele, xhr, action) {
         $ele.attr("disabled", "disabled");
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
+            $("button.control-all").attr("disabled", "disabled");
             $ele.find("span.spinner-grow").removeClass('d-none');
         }
     };
@@ -54,7 +55,7 @@
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
             setTimeout(function () {
                 $ele.find("span.spinner-grow").addClass('d-none');
-                $ele.removeAttr("disabled");
+                $("button.control-all").removeAttr("disabled");
             }, parseInt($.urlParam('autorefresh', 5)) * 1000)
         }
     };
