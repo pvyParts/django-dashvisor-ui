@@ -14,6 +14,7 @@ setup(
     version='1.1',
     url="https://github.com/alexsilva/django-dashvisor-ui",
     description='Django Supervisor dashboard',
+    long_description_content_type='text/markdown',
     long_description=long_description,
     author='Alex',
     author_email='alex@fabricadigital.com.br',
