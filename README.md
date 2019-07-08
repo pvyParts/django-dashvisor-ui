@@ -31,4 +31,4 @@ Execute on web browser:
     http://localhost:8000/dashboard
 
 
-![dashboard]https://github.com/alexsilva/django-dashvisor/blob/master/dashvisor/ui/dashboard.png)
+![dashboard](https://github.com/alexsilva/django-dashvisor/blob/master/dashvisor/ui/dashboard.png)
