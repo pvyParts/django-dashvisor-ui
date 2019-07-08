@@ -7,11 +7,29 @@
                 <tr>
                     <th>Server id</th>
                     <th>Server</th>
-                    <th>Process name</th>
-                    <th>Process state</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th>Name</th>
+                    <th>State</th>
+                    <th><button class="btn btn-outline-primary btn-sm startall"
+                                data-server="*"
+                                data-action="start_all"
+                                data-process="*">
+                        <span class="spinner-grow spinner-grow-sm d-none"></span>
+                        start all</button>
+                    </th>
+                    <th><button class="btn btn-outline-danger btn-sm stopall"
+                        data-server="*"
+                        data-action="stop_all"
+                        data-process="*">
+                        <span class="spinner-grow spinner-grow-sm d-none"></span>
+                        stop all</button>
+                    </th>
+                    <th><button class="btn btn-outline-warning btn-sm restartall"
+                        data-server="*"
+                        data-action="restart_all"
+                        data-process="*">
+                        <span class="spinner-grow spinner-grow-sm d-none"></span>
+                        restart all</button>
+                    </th>
                 </tr>
             </thead>
         </table>
@@ -95,10 +113,13 @@
                 $("a.tail").supervisor({
                     url: control_url,
                     screen: $('#supervisor-modal')
-                }).action()
+                }).action();
             };
             table.on('init.dt', function () {
                 table_handlers();
+                $("button.startall,.restartall,.stopall").supervisor({
+                    url: control_url,
+                }).action()
             });
             var autorefresh = parseInt($.urlParam('autorefresh', 5));
             if (autorefresh !== 0) {

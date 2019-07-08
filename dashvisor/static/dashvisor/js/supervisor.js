@@ -45,9 +45,17 @@
 
     Supervisor.prototype.before_command = function ($ele, xhr, action) {
         $ele.attr("disabled", "disabled");
+        if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
+            $ele.find("span.spinner-grow").removeClass('d-none');
+        }
     };
 
-    Supervisor.prototype.after_command = function ($ele, xhr, action) {};
+    Supervisor.prototype.after_command = function ($ele, xhr, action) {
+        if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
+            $ele.find("span.spinner-grow").addClass('d-none');
+            $ele.removeAttr("disabled");
+        }
+    };
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
         if (!$ele.data("setIntervalID")) {
@@ -83,18 +91,18 @@
     };
 
     Supervisor.prototype.before_action = function ($ele, xhr, action) {
-        if (['start', 'stop', 'restart'].indexOf(action) !== -1) {
-            this.before_command($ele, xhr, action);
-        } else if (action === 'tail') {
+        if (action === 'tail') {
             this.before_tail($ele, xhr);
+        } else {
+            this.before_command($ele, xhr, action);
         }
     };
 
     Supervisor.prototype.after_action = function ($ele, data, action) {
-        if (['start', 'stop', 'restart'].indexOf(action) !== -1) {
-            this.after_command($ele, data, action);
-        } else if (action === 'tail') {
+        if (action === 'tail') {
             this.after_tail($ele, data);
+        } else {
+            this.after_command($ele, data, action);
         }
     };
 

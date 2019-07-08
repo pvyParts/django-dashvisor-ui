@@ -68,6 +68,13 @@ class Server(object):
     def start_all(self):
         return self.connection.supervisor.startAllProcesses()
 
+    def restart_all(self):
+        self.stop_all()
+        return self.start_all()
+
+    def stop_all(self):
+        return self.connection.supervisor.stopAllProcesses()
+
     def restart(self, name):
         self.stop(name)
         return self.start(name)
