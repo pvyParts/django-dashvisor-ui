@@ -8,6 +8,7 @@
                     <th>Server id</th>
                     <th>Server</th>
                     <th>Name</th>
+                    <th>Description</th>
                     <th>State</th>
                     <th><button class="btn btn-outline-primary btn-sm startall"
                                 data-server="*"
@@ -44,7 +45,7 @@
     <script type="application/javascript">
         $(document).ready(function () {
             var control_url = '{{ base_path }}control/';
-            var action_index = 4;
+            var action_index = 5;
             var table = $('#supervisor').DataTable({
                 processing: false,
                 serverSide: false,
@@ -62,6 +63,7 @@
                     {"data": "server.id"},
                     {"data": "server.name"},
                     {"data": "name"},
+                    {"data": "description"},
                     {"data": 'statename'},
                 ],
                 columnDefs: [
@@ -81,7 +83,7 @@
                             var state = {"RUNNING": 'primary', 'STOPPED': 'danger', 'STARTING': 'warning'};
                             return '<p class="text-' + state[data] + '">' + data + '</p>'
                         },
-                        "targets": 3
+                        "targets": 4
                     },
                     {
                         "render": function ( data, type, row ) {
