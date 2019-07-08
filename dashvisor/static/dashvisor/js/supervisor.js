@@ -42,7 +42,14 @@
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
         if (!$ele.data("setIntervalID")) {
-            this.config.screen.find(".modal-body").empty();
+            this.config.screen.find(".modal-body").html(
+                '<div class="d-flex justify-content-center">' +
+                '<button class="btn btn-light" type="button" disabled>' +
+                '  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' +
+                '  Loading...' +
+                '</button>' +
+                '</div>');
+
             this.config.screen.modal("show");
             this.config.screen.find('.modal-title')
                 .text("Tail " + $ele.text() + " stdout");
