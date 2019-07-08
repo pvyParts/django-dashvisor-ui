@@ -29,3 +29,6 @@ Configure urls:
 Execute on web browser:
     
     http://localhost:8000/dashboard
+
+
+![dashboard](/ui/dashboard.png)
