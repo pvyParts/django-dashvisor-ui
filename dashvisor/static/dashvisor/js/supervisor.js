@@ -52,8 +52,10 @@
 
     Supervisor.prototype.after_command = function ($ele, xhr, action) {
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
-            $ele.find("span.spinner-grow").addClass('d-none');
-            $ele.removeAttr("disabled");
+            setTimeout(function () {
+                $ele.find("span.spinner-grow").addClass('d-none');
+                $ele.removeAttr("disabled");
+            }, parseInt($.urlParam('autorefresh', 5)) * 1000)
         }
     };
 
