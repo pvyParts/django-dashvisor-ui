@@ -44,6 +44,8 @@
         if (!$ele.data("setIntervalID")) {
             this.config.screen.find(".modal-body").empty();
             this.config.screen.modal("show");
+            this.config.screen.find('.modal-title')
+                .text("Tail " + $ele.text() + " stdout");
 
             var server = $ele.attr("data-server");
             var action = $ele.attr("data-action");
