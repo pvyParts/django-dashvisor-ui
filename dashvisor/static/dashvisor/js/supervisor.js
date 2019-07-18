@@ -84,7 +84,7 @@
 
             this.config.screen.on('hide.bs.modal', function () {
                 clearInterval($ele.data("setIntervalID"));
-                clearInterval($ele.removeData("setIntervalID"))
+                $ele.removeData("setIntervalID");
             })
         }
     };
