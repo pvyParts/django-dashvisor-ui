@@ -1,3 +1,7 @@
 dashvisor/django_project/servers.conf
+django_dashvisor_ui.egg-info/*
 supervisord.log
 supervisord.pid
+.idea
+build
+dist/*
