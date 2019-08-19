@@ -2,24 +2,24 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
-from dashvisor.backends import backend
+from dashvisor import backends
 from dashvisor.utils import login_admin_only_required
 
 
 def get_backend(request):
-    if backend.request is None:
-        backend(request)
-    return backend
+    if backends.backend.request is None:
+        backends.backend(request)
+    return backends.backend
 
 
 @login_admin_only_required
 def dashboard(request):
-    _backend = get_backend(request)
-    _backend.refresh()
+    backend = get_backend(request)
+    backend.refresh()
     return render_to_response(
         'dashvisor/dashboard.html',
         {
-            'servers': _backend.servers,
+            'servers': backend.servers,
             'query_url': reverse('dashvisor_query'),
             'base_path': reverse("dashvisor_dashboard"),
             'constants': {
@@ -64,17 +64,16 @@ def _get_server_status(request, server, action):
 
 @login_admin_only_required
 def query(request):
-    _backend = get_backend(request)
-
+    backend = get_backend(request)
     server_key = request.GET.get('server', '*')
     action = request.GET.get('action')
     data = {'data': []}
     if server_key == "*":
-        for server in _backend.servers.itervalues():
+        for server in backend.servers.itervalues():
             status = _get_server_status(request, server, action)
             data['data'].extend(status)
     else:
-        server = _backend.servers[server_key]
+        server = backend.servers[server_key]
         status = _get_server_status(request, server, action)
         data['data'].extend(status)
     return JsonResponse(data, safe=False)
