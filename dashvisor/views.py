@@ -65,15 +65,15 @@ def _get_server_status(request, server, action):
 @login_admin_only_required
 def query(request):
     backend = get_backend(request)
-    server_key = request.GET.get('server', '*')
+    server_alias = request.GET.get('server_alias', '*')
     action = request.GET.get('action')
     data = {'data': []}
-    if server_key == "*":
+    if server_alias == "*":
         for server in backend.servers.itervalues():
             status = _get_server_status(request, server, action)
             data['data'].extend(status)
     else:
-        server = backend.servers[server_key]
+        server = backend.servers[server_alias]
         status = _get_server_status(request, server, action)
         data['data'].extend(status)
     return JsonResponse(data, safe=False)
