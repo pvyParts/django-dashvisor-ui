@@ -10,10 +10,10 @@
         $.extend(this.config, {screen_update: 5000})
     };
 
-    Supervisor.prototype.do_action = function ($ele, server, action, process) {
+    Supervisor.prototype.do_action = function ($ele, server_alias, action, process) {
         var self = this;
         $.ajax({
-            url: this.config.url + server + "/" + process + "/" + action + "/",
+            url: this.config.url + server_alias + "/" + process + "/" + action + "/",
             cache: false,
             beforeSend: function (xhr) {
                 self.before_action($ele, xhr, action)
@@ -27,10 +27,10 @@
         var self = this;
         self.$ele.each(function () {
             var $ele = $(this);
-            var server = $ele.attr("data-server");
+            var server_alias = $ele.attr("data-server");
             var action = $ele.attr("data-action");
             var process = $ele.attr('data-process');
-            $ele.click($.proxy(self.do_action, self, $ele, server, action, process));
+            $ele.click($.proxy(self.do_action, self, $ele, server_alias, action, process));
         });
         return this;
     };
