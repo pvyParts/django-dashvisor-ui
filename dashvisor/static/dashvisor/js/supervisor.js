@@ -64,6 +64,7 @@
     };
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
+        var self = this;
         if (!$ele.data("setTimeoutHandler")) {
             var $modal_body = this.config.screen.find(".modal-body");
             $modal_body.find(".loading").removeClass("d-none");
@@ -74,6 +75,7 @@
             this.config.screen.on('hide.bs.modal', function () {
                 clearTimeout($ele.data("setTimeoutHandler"));
                 $ele.removeData("setTimeoutHandler");
+                self.config.data.offset = 1024;
             });
         }
     };
