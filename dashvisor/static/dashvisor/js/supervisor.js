@@ -7,7 +7,7 @@
     var Supervisor = function ($ele, config) {
         this.$ele = $ele;
         this.config = config;
-        $.extend(this.config, {screen_update: 5000})
+        $.extend(this.config, {screen_update: 3000})
     };
 
     Supervisor.prototype.do_action = function ($ele, server_alias, action, process) {
