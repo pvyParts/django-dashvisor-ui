@@ -30,6 +30,7 @@
         var self = this;
         self.$ele.each(function () {
             var $ele = $(this);
+            $ele.data("autoUpdate", false);
             var server_alias = $ele.attr("data-server");
             var action = $ele.attr("data-action");
             var process = $ele.attr('data-process');
@@ -65,7 +66,7 @@
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
         var self = this;
-        if (!$ele.data("setTimeoutHandler")) {
+        if (!$ele.data("updateTimeHandler")) {
             var $modal_body = this.config.screen.find(".modal-body");
             $modal_body.find(".loading").removeClass("d-none");
             $modal_body.find(".content").empty();
@@ -73,10 +74,12 @@
                 .text("Tail " + $ele.text() + " stdout");
             this.config.screen.modal("show");
             this.config.screen.on('hide.bs.modal', function () {
-                clearTimeout($ele.data("setTimeoutHandler"));
-                $ele.removeData("setTimeoutHandler");
+                $ele.data("autoUpdate", false);
+                clearTimeout($ele.data("updateTimeHandler"));
+                $ele.removeData("updateTimeHandler");
                 self.config.data.offset = 1024;
             });
+            $ele.data("autoUpdate", true);
         }
     };
 
@@ -90,12 +93,13 @@
             }
             this.config.data.offset = result.size;
         }
-        var server = $ele.attr("data-server");
-        var action = $ele.attr("data-action");
-        var process = $ele.attr('data-process');
-
-        $ele.data("setTimeoutHandler", setTimeout($.proxy(this.do_action, this),
-            this.config.screen_update, $ele, server, action, process));
+        if ($ele.data("autoUpdate") === true) {
+            var server = $ele.attr("data-server");
+            var action = $ele.attr("data-action");
+            var process = $ele.attr('data-process');
+            $ele.data("updateTimeHandler", setTimeout($.proxy(this.do_action, this),
+                this.config.screen_update, $ele, server, action, process));
+        }
     };
 
     Supervisor.prototype.before_action = function ($ele, xhr, action) {
