@@ -47,7 +47,8 @@ class Server(object):
                 return False
             raise
 
-    @ExceptionHandler(CannotSendRequest, defaults=['', 0, False])
+    @ExceptionHandler(CannotSendRequest, defaults={'content': '', 'size': 0,
+                                                   'overflow': False})
     def tail(self, name, offset=-1, length=None):
         if length is None:
             length = 1024 * 5
