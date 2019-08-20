@@ -45,15 +45,18 @@ def control(request, server_alias, process, action):
     for name in attrs:
         if name in method:
             action_kwargs[name] = attrs[name](method[name])
+    action_args = []
+    if process != '*':
+        action_args.append(process)
     if server_alias == '*':
         result = []
         for server_alias in backend.servers:
             server = backend.servers[server_alias]
             func = getattr(server, action)
-            result.append(func(process, **action_kwargs))
+            result.append(func(*action_args, **action_kwargs))
     else:
         func = getattr(backend.servers[server_alias], action)
-        result = func(process, **action_kwargs)
+        result = func(*action_args, **action_kwargs)
     return JsonResponse({
         'result': result,
     }, safe=False)
