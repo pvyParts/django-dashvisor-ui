@@ -15,11 +15,14 @@
         $.ajax({
             url: this.config.url + server_alias + "/" + process + "/" + action + "/",
             cache: false,
+            data: self.config.data || {},
             beforeSend: function (xhr) {
                 self.before_action($ele, xhr, action)
             }
         }).done(function (data) {
             self.after_action($ele, data, action);
+        }).fail(function (xhr) {
+            self.after_action($ele, {}, action);
         })
     };
 
@@ -61,36 +64,36 @@
     };
 
     Supervisor.prototype.before_tail = function ($ele, xhr) {
-        if (!$ele.data("setIntervalID")) {
-            this.config.screen.find(".modal-body").html(
-                '<div class="d-flex justify-content-center">' +
-                '<button class="btn btn-light" type="button" disabled>' +
-                '  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' +
-                '  Loading...' +
-                '</button>' +
-                '</div>');
-
-            this.config.screen.modal("show");
+        if (!$ele.data("setTimeoutHandler")) {
+            var $modal_body = this.config.screen.find(".modal-body");
+            $modal_body.find(".loading").removeClass("d-none");
+            $modal_body.find(".content").empty();
             this.config.screen.find('.modal-title')
                 .text("Tail " + $ele.text() + " stdout");
-
-            var server = $ele.attr("data-server");
-            var action = $ele.attr("data-action");
-            var process = $ele.attr('data-process');
-
-            $ele.data("setIntervalID",
-                setInterval($.proxy(this.do_action, this),
-                    this.config.screen_update, $ele, server, action, process));
-
+            this.config.screen.modal("show");
             this.config.screen.on('hide.bs.modal', function () {
-                clearInterval($ele.data("setIntervalID"));
-                $ele.removeData("setIntervalID");
-            })
+                clearTimeout($ele.data("setTimeoutHandler"));
+                $ele.removeData("setTimeoutHandler");
+            });
         }
     };
 
     Supervisor.prototype.after_tail = function ($ele, data) {
-        this.config.screen.find(".modal-body").html("<pre>" + data.result[0] + "</pre>");
+        var $modal_body = this.config.screen.find(".modal-body");
+        var result = data.result;
+        if (result) {
+            if (result.content.length > 0) {
+                $modal_body.find(".loading").addClass("d-none");
+                $modal_body.find(".content").append(result.content);
+            }
+            this.config.data.offset = result.size;
+        }
+        var server = $ele.attr("data-server");
+        var action = $ele.attr("data-action");
+        var process = $ele.attr('data-process');
+
+        $ele.data("setTimeoutHandler", setTimeout($.proxy(this.do_action, this),
+            this.config.screen_update, $ele, server, action, process));
     };
 
     Supervisor.prototype.before_action = function ($ele, xhr, action) {

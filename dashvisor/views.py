@@ -31,18 +31,29 @@ def dashboard(request):
 
 
 @login_admin_only_required
-def control(request, server, process, action):
-    _backend = get_backend(request)
-
-    if action not in ('start', 'stop', 'restart', 'tail',
-                      'start_all', 'restart_all', 'stop_all'):
+def control(request, server_alias, process, action):
+    backend = get_backend(request)
+    method = getattr(request, request.method)
+    if action not in ('start', 'stop', 'restart',
+                      'tail',
+                      'start_all',
+                      'restart_all',
+                      'stop_all'):
         raise Http404
-    if server == '*':
+    action_kwargs = {}
+    attrs = {'offset': int, 'length': int}
+    for name in attrs:
+        if name in method:
+            action_kwargs[name] = attrs[name](method[name])
+    if server_alias == '*':
         result = []
-        for server in backend.servers:
-            result.append(getattr(backend.servers[server], action)())
+        for server_alias in backend.servers:
+            server = backend.servers[server_alias]
+            func = getattr(server, action)
+            result.append(func(process, **action_kwargs))
     else:
-        result = getattr(backend.servers[server], action)(process)
+        func = getattr(backend.servers[server_alias], action)
+        result = func(process, **action_kwargs)
     return JsonResponse({
         'result': result,
     }, safe=False)

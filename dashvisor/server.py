@@ -48,11 +48,12 @@ class Server(object):
             raise
 
     @ExceptionHandler(CannotSendRequest, defaults=['', 0, False])
-    def tail(self, name, length=None):
+    def tail(self, name, offset=-1, length=None):
         if length is None:
             length = 1024 * 5
         try:
-            return self.connection.supervisor.tailProcessLog(name, -1, length)
+            result = self.connection.supervisor.tailProcessLog(name, offset, length)
+            return dict(zip(('content', 'size', 'overflow'), result))
         except Fault as e:
             raise
 

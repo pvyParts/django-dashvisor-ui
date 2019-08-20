@@ -114,6 +114,7 @@
 
                 $("a.tail").supervisor({
                     url: control_url,
+                    data: {offset: 1024, length: 1024 * 5},
                     screen: $('#supervisor-modal')
                 }).action();
             };
