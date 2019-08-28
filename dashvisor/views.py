@@ -23,15 +23,29 @@ def dashboard(request):
     )
 
 
+class ControlAction(list):
+    def __init__(self):
+        super(ControlAction, self).__init__()
+        self.extend([
+            'start',
+            'stop',
+            'restart',
+            'tail',
+            'start_all',
+            'restart_all',
+            'stop_all',
+            'reload_config'
+        ])
+
+    def check_perm_or_404(self, action):
+        if action not in self:
+            raise Http404
+
+
 @login_admin_only_required
 def control(request, server_alias, process, action):
     request_method = getattr(request, request.method)
-    if action not in ('start', 'stop', 'restart',
-                      'tail',
-                      'start_all',
-                      'restart_all',
-                      'stop_all'):
-        raise Http404
+    ControlAction().check_perm_or_404(action)
     action_kwargs = {}
     attrs = {'offset': int, 'length': int}
     for name in attrs:
