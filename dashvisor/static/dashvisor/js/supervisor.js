@@ -10,8 +10,11 @@
         $.extend(this.config, {screen_update: 3000})
     };
 
-    Supervisor.prototype.do_action = function ($ele, server_alias, action, process) {
+    Supervisor.prototype.do_action = function ($ele) {
         var self = this;
+        var server_alias = $ele.data("server");
+        var action = $ele.data("action");
+        var process = $ele.data('process');
         $.ajax({
             url: this.config.url + server_alias + "/" + process + "/" + action + "/",
             cache: false,
@@ -31,10 +34,7 @@
         self.$ele.each(function () {
             var $ele = $(this);
             $ele.data("autoUpdate", false);
-            var server_alias = $ele.attr("data-server");
-            var action = $ele.attr("data-action");
-            var process = $ele.attr('data-process');
-            $ele.click($.proxy(self.do_action, self, $ele, server_alias, action, process));
+            $ele.click($.proxy(self.do_action, self, $ele));
         });
         return this;
     };
@@ -48,9 +48,9 @@
     };
 
     Supervisor.prototype.before_command = function ($ele, xhr, action) {
-        $ele.attr("disabled", "disabled");
+        $ele.prop("disabled", true);
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
-            $("button.control-all").attr("disabled", "disabled");
+            $("button.control-all").prop("disabled", true);
             $ele.find("span.spinner-grow").removeClass('d-none');
         }
     };
@@ -59,7 +59,7 @@
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
             setTimeout(function () {
                 $ele.find("span.spinner-grow").addClass('d-none');
-                $("button.control-all").removeAttr("disabled");
+                $("button.control-all").prop("disabled", false);
             }, parseInt($.urlParam('autorefresh', 5)) * 1000)
         }
     };
@@ -94,11 +94,10 @@
             this.config.data.offset = result.size;
         }
         if ($ele.data("autoUpdate") === true) {
-            var server = $ele.attr("data-server");
-            var action = $ele.attr("data-action");
-            var process = $ele.attr('data-process');
-            $ele.data("updateTimeHandler", setTimeout($.proxy(this.do_action, this),
-                this.config.screen_update, $ele, server, action, process));
+            $ele.data("updateTimeHandler", setTimeout(
+                $.proxy(this.do_action, this),
+                this.config.screen_update, $ele)
+            );
         }
     };
 
