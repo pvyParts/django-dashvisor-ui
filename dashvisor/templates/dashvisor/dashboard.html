@@ -39,7 +39,7 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script type="application/numjunks" id="table-action-row">
+    <script type="application/numjunks" id="table-btn-action-row">
     {% verbatim %}
     <button class="btn {{ class }} btn-sm action"
         id="btn-{{ row.name }}-{{ action }}"
@@ -102,7 +102,7 @@
                     {
                         "render": function ( data, type, row ) {
                             var state = $.fn.Supervisor.isRunningState(row.statename) ?  'disabled': '';
-                            return nunjucks_env.render('action-row', {
+                            return nunjucks_env.render('btn-action-row', {
                                 disabled: state,
                                 row: row,
                                 label: 'start',
@@ -115,7 +115,7 @@
                     {
                         "render": function ( data, type, row ) {
                             var state = $.fn.Supervisor.isStoppedState(row.statename) ? 'disabled': '';
-                            return nunjucks_env.render('action-row', {
+                            return nunjucks_env.render('btn-action-row', {
                                 disabled: state,
                                 row: row,
                                 label: 'stop',
@@ -127,7 +127,7 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return nunjucks_env.render('action-row', {
+                            return nunjucks_env.render('btn-action-row', {
                                 row: row,
                                 label: 'restart',
                                 action: 'restart',
