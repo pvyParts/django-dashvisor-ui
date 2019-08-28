@@ -71,10 +71,18 @@
             $ele.find("span.spinner-border").addClass('d-none');
             $ele.find("img").removeClass("d-none");
             var $toast = this.config.screen.toast("show");
-            $toast.find("strong.title").text("Supervisor update config");
+            $toast.find("strong.title").text("Supervisor (update)");
             var $toast_body = $toast.find(".toast-body");
-            if (data.result) {
-                $toast_body.html("update successfully!");
+            var result = data.result;
+            if (result) {
+                var status = result[0];
+                if (status.added.length === 0 &&
+                    status.changed.length === 0 &&
+                    status.removed.length === 0) {
+                    $toast_body.html("no changes.");
+                } else {
+                    $toast_body.html(this.config.template.render(status));
+                }
             } else {
                 $toast_body.html("server error!");
             }

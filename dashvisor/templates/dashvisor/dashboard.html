@@ -57,6 +57,28 @@
 
 {% block javascript %}
     {{ block.super }}
+    <script type="application/numjunks" id="table-update-config">
+    {% verbatim %}
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item text-left">Added:</li>
+        {% for name in added %}
+            <li class="list-group-item text-secondary">{{name}}</li>
+        {% endfor %}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item text-left">Changed:</li>
+        {% for name in changed %}
+            <li class="list-group-item text-secondary">{{name}}</li>
+        {% endfor %}
+    </ul>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item text-left">Removed:</li>
+        {% for name in removed %}
+            <li class="list-group-item text-secondary">{{name}}</li>
+        {% endfor %}
+    </ul>
+    {% endverbatim %}
+    </script>
     <script type="application/numjunks" id="table-btn-action-row">
     {% verbatim %}
     <button class="btn {{ class }} btn-sm action"
@@ -171,7 +193,8 @@
 
             $("button#btn-update-config-action").supervisor({
                 url: control_url,
-                screen: $("#win-server-info")
+                screen: $("#win-server-info"),
+                template: nunjucks_env.getTemplate("update-config", true)
             }).action();
             var table_handlers = function() {
                 $("button.action").supervisor({
