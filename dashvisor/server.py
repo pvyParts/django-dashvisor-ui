@@ -67,6 +67,15 @@ class Server(object):
                 return False
             raise
 
+    @ExceptionHandler(CannotSendRequest)
+    def reload_config(self):
+        try:
+            return self.connection.supervisor.reloadConfig()
+        except Fault as e:
+            if e.faultString.startswith('CANT_REREAD'):
+                return False
+            raise
+
     def start_all(self):
         return self.connection.supervisor.startAllProcesses()
 
