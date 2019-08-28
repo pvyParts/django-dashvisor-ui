@@ -53,7 +53,7 @@
             $("button.control-all").prop("disabled", true);
             $ele.find("span.spinner-grow").removeClass('d-none');
 
-        } else if (action === 'reload_config') {
+        } else if (action === 'update_config') {
             $ele.find("span.spinner-border").removeClass('d-none');
             $ele.find("img").addClass("d-none")
         }
@@ -66,10 +66,18 @@
                 $("button.control-all").prop("disabled", false);
             }, parseInt($.urlParam('autorefresh', 5)) * 1000)
 
-        } else if (action === 'reload_config') {
+        } else if (action === 'update_config') {
             $ele.prop("disabled", false);
             $ele.find("span.spinner-border").addClass('d-none');
-            $ele.find("img").removeClass("d-none")
+            $ele.find("img").removeClass("d-none");
+            var $toast = this.config.screen.toast("show");
+            $toast.find("strong.title").text("Supervisor update config");
+            var $toast_body = $toast.find(".toast-body");
+            if (data.result) {
+                $toast_body.html("update successfully!");
+            } else {
+                $toast_body.html("server error!");
+            }
         }
     };
 

@@ -1,7 +1,11 @@
+import xmlrpclib
+
 from collections import OrderedDict
 from httplib import CannotSendRequest
 from urlparse import urlparse
 from xmlrpclib import ServerProxy, Fault
+
+from supervisor import xmlrpc
 
 
 class ExceptionHandler(object):
@@ -75,6 +79,65 @@ class Server(object):
             if e.faultString.startswith('CANT_REREAD'):
                 return False
             raise
+
+    def update_config(self, arg=''):
+        supervisor = self.connection.supervisor
+        try:
+            result = supervisor.reloadConfig()
+        except xmlrpclib.Fault as e:
+            if e.faultCode == xmlrpc.Faults.SHUTDOWN_STATE:
+                raise Exception('ERROR: already shutting down')
+            else:
+                raise
+
+        added, changed, removed = result[0]
+        valid_gnames = set(arg.split())
+
+        # If all is specified treat it as if nothing was specified.
+        if "all" in valid_gnames:
+            valid_gnames = set()
+
+        # If any gnames are specified we need to verify that they are
+        # valid in order to print a useful error message.
+        if valid_gnames:
+            groups = set()
+            for info in supervisor.getAllProcessInfo():
+                groups.add(info['group'])
+            # New gnames would not currently exist in this set so add those as well.
+            groups.update(added)
+
+            for gname in valid_gnames:
+                if gname not in groups:
+                    raise Exception('ERROR: no such group: %s' % gname)
+
+        for gname in removed:
+            if valid_gnames and gname not in valid_gnames:
+                continue
+            results = supervisor.stopProcessGroup(gname)
+            # log(gname, "stopped")
+
+            fails = [res for res in results if res['status'] == xmlrpc.Faults.FAILED]
+            if fails:
+                msg = "%s: %s" % (gname, "has problems; not removing")
+                continue
+            supervisor.removeProcessGroup(gname)
+            # log(gname, "removed process group")
+
+        for gname in changed:
+            if valid_gnames and gname not in valid_gnames:
+                continue
+            supervisor.stopProcessGroup(gname)
+            # log(gname, "stopped")
+
+            supervisor.removeProcessGroup(gname)
+            supervisor.addProcessGroup(gname)
+            # log(gname, "updated process group")
+
+        for gname in added:
+            if valid_gnames and gname not in valid_gnames:
+                continue
+            supervisor.addProcessGroup(gname)
+            # log(gname, "added process group")
 
     def start_all(self):
         return self.connection.supervisor.startAllProcesses()

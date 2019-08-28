@@ -9,10 +9,17 @@ pre.content {
     padding: 5px;
 }
 
-button.reload_config > img {
+button.update_config > img {
     width: 16px;
     height: 17px;
 }
 div.control-bar {
     margin: 2px;
+}
+
+#win-server-info {
+    position: fixed;
+    z-index: 99; /* Make sure it does not overlap */
+    top: 10px;
+    left: 10px;
 }

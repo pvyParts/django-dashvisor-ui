@@ -39,6 +39,7 @@ class ControlAction(list):
             'start_all',
             'restart_all',
             'stop_all',
+            'update_config',
             'reload_config'
         ])
 

@@ -1,12 +1,13 @@
 {% extends 'dashvisor/base.html' %}
 {% load static %}
 {% block content %}
+    {% include 'dashvisor/toast.html' %}
     <div class="container">
         <div class="clearfix control-bar">
-        <button class="btn btn-outline-primary btn-sm reload_config float-right"
-                data-toggle="tooltip" data-placement="bottom" title="reload supervisor config"
-                id="btn-reload-config-action"
-                data-action="reload_config"
+        <button class="btn btn-outline-primary btn-sm update_config float-right"
+                data-toggle="tooltip" data-placement="bottom" title="update supervisor config"
+                id="btn-update-config-action"
+                data-action="update_config"
                 data-server="*"
                 data-process="*">
             <img src="{% static 'dashvisor/images/sync.svg' %}" alt="icon name">
@@ -168,8 +169,9 @@
                 ]
             });
 
-            $("button#btn-reload-config-action").supervisor({
-                url: control_url
+            $("button#btn-update-config-action").supervisor({
+                url: control_url,
+                screen: $("#win-server-info")
             }).action();
             var table_handlers = function() {
                 $("button.action").supervisor({
