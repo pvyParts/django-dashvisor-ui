@@ -1,3 +1,5 @@
+import socket
+
 from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
@@ -8,7 +10,10 @@ from dashvisor.utils import login_admin_only_required
 
 @login_admin_only_required
 def dashboard(request):
-    backend.refresh()
+    try:
+        backend.refresh()
+    except socket.error:
+        pass
     return render_to_response(
         'dashvisor/dashboard.html',
         {
