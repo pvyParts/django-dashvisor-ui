@@ -52,15 +52,24 @@
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
             $("button.control-all").prop("disabled", true);
             $ele.find("span.spinner-grow").removeClass('d-none');
+
+        } else if (action === 'reload_config') {
+            $ele.find("span.spinner-border").removeClass('d-none');
+            $ele.find("img").addClass("d-none")
         }
     };
 
-    Supervisor.prototype.after_command = function ($ele, xhr, action) {
+    Supervisor.prototype.after_command = function ($ele, data, action) {
         if (['start_all', 'stop_all', 'restart_all'].indexOf(action) !== -1) {
             setTimeout(function () {
                 $ele.find("span.spinner-grow").addClass('d-none');
                 $("button.control-all").prop("disabled", false);
             }, parseInt($.urlParam('autorefresh', 5)) * 1000)
+
+        } else if (action === 'reload_config') {
+            $ele.prop("disabled", false);
+            $ele.find("span.spinner-border").addClass('d-none');
+            $ele.find("img").removeClass("d-none")
         }
     };
 

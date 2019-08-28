@@ -8,3 +8,11 @@ pre.content {
     margin-bottom: 0 !important;
     padding: 5px;
 }
+
+button.reload_config > img {
+    width: 16px;
+    height: 17px;
+}
+div.control-bar {
+    margin: 2px;
+}

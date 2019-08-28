@@ -2,6 +2,17 @@
 {% load static %}
 {% block content %}
     <div class="container">
+        <div class="clearfix control-bar">
+        <button class="btn btn-outline-primary btn-sm reload_config float-right"
+                data-toggle="tooltip" data-placement="bottom" title="reload supervisor config"
+                id="btn-reload-config-action"
+                data-action="reload_config"
+                data-server="*"
+                data-process="*">
+            <img src="{% static 'dashvisor/images/sync.svg' %}" alt="icon name">
+            <span class="spinner-border spinner-border-sm d-none"></span>
+        </button>
+        </div>
         <table id="supervisor" class="table table-striped table-condensed" style="width:100%">
             <thead>
                 <tr>
@@ -150,6 +161,10 @@
                     },
                 ]
             });
+
+            $("button#btn-reload-config-action").supervisor({
+                url: control_url
+            }).action();
             var table_handlers = function() {
                 $("button.action").supervisor({
                     url: control_url
