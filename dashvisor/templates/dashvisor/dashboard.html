@@ -36,11 +36,25 @@
     </div>
 {% include 'dashvisor/modal.html' %}
 {% endblock %}
+
 {% block javascript %}
     {{ block.super }}
+    <script type="application/numjunks" id="table-action-row">
+    {% verbatim %}
+    <button class="btn {{ class }} btn-sm action"
+        id="btn-{{ row.name }}-{{ action }}"
+        data-action="{{ action }}"
+        data-server="{{ row.server.id }}"
+        data-process="{{ row.id }}" {{ disabled }}>
+        {{ label }}
+    </button>
+    {% endverbatim %}
+    </script>
+    <script type="application/javascript" src="{% static 'dashvisor/js/nunjunks.engine.js' %}"></script>
     <script type="application/javascript" src="{% static 'dashvisor/js/supervisor.js' %}"></script>
     <script type="application/javascript">
         $(document).ready(function () {
+            var nunjucks_env = new nunjucks.Environment(new DOMTemplateEngine('#table'));
             var control_url = '{{ base_path }}control/';
             var action_index = 4;
             var table = $('#supervisor').DataTable({
@@ -87,21 +101,38 @@
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var btn_state = $.fn.Supervisor.isRunningState(row.statename) ?  'disabled': '';
-                            return "<button data-action='start' data-server='" + row.server.id + "' data-process='" + row.id + "' class='btn btn-primary btn-sm action' " + btn_state + ">start</button>"
+                            var state = $.fn.Supervisor.isRunningState(row.statename) ?  'disabled': '';
+                            return nunjucks_env.render('action-row', {
+                                disabled: state,
+                                row: row,
+                                label: 'start',
+                                action: 'start',
+                                class: 'btn-primary'
+                            });
                         },
                         "targets": action_index
                     },
                     {
                         "render": function ( data, type, row ) {
-                            var btn_state = $.fn.Supervisor.isStoppedState(row.statename) ? 'disabled': '';
-                            return "<button data-action='stop' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-danger btn-sm action' " + btn_state + ">stop</button>"
+                            var state = $.fn.Supervisor.isStoppedState(row.statename) ? 'disabled': '';
+                            return nunjucks_env.render('action-row', {
+                                disabled: state,
+                                row: row,
+                                label: 'stop',
+                                action: 'stop',
+                                class: 'btn-danger'
+                            })
                         },
                         "targets": action_index + 1
                     },
                     {
                         "render": function ( data, type, row ) {
-                            return "<button data-action='restart' data-server='" + row.server.id + "' data-process='" + row.id + "'class='btn btn-warning btn-sm action'>restart</button>"
+                            return nunjucks_env.render('action-row', {
+                                row: row,
+                                label: 'restart',
+                                action: 'restart',
+                                class: 'btn-warning'
+                            });
                         },
                         "targets": action_index + 2
                     },
@@ -125,7 +156,7 @@
                 }).action()
             });
             var autorefresh = parseInt($.urlParam('autorefresh', 5));
-            if (autorefresh !== 0) {
+            if (autorefresh !== 0 && !isNaN(autorefresh)) {
                 setInterval( function () {
                     $('#supervisor').DataTable().ajax.reload(function (data) {
                         table_handlers();
