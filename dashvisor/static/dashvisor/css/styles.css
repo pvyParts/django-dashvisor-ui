@@ -19,7 +19,8 @@ div.control-bar {
 
 #win-server-info {
     position: fixed;
+    transform: translateX(-50%);
     z-index: 99; /* Make sure it does not overlap */
+    left: 50%;
     top: 10px;
-    left: 10px;
 }
