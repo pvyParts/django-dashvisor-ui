@@ -79,7 +79,7 @@
                 if (status.added.length === 0 &&
                     status.changed.length === 0 &&
                     status.removed.length === 0) {
-                    $toast_body.html("no changes.");
+                    $toast_body.html("no config changes");
                 } else {
                     $toast_body.html(this.config.template.render(status));
                 }
