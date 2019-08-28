@@ -50,6 +50,19 @@
     </button>
     {% endverbatim %}
     </script>
+    <script type="application/numjunks" id="table-tail-action-row">
+    {% verbatim %}
+    <a href="#" class="tail"
+        id="{{ row.name }}-tail-action"
+        data-action="tail"
+        data-toggle="tooltip"
+        title="{{ row.human_name }}"
+        data-server="{{ row.server.id }}"
+        data-process="{{ row.id }}">
+        {{ data }}
+    </a>
+    {% endverbatim %}
+    </script>
     <script type="application/javascript" src="{% static 'dashvisor/js/nunjunks.engine.js' %}"></script>
     <script type="application/javascript" src="{% static 'dashvisor/js/supervisor.js' %}"></script>
     <script type="application/javascript">
@@ -84,11 +97,10 @@
                     { "visible": false,  "targets": 0 },
                     {
                         "render": function ( data, type, row ) {
-                            return '<a href="#" class="tail" data-action="tail" data-toggle="tooltip"' +
-                                'title="'+ row.human_name + '"' +
-                                'data-server="' + row.server.id + '"' +
-                                'data-process="' + row.id + '">' + data +
-                                '</a>'
+                            return nunjucks_env.render('tail-action-row', {
+                                row: row,
+                                data: data,
+                            });
                         },
                         "targets": 1
                     },
