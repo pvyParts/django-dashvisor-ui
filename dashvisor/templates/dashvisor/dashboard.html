@@ -190,13 +190,7 @@
                     },
                 ]
             });
-
-            $("button#btn-update-config-action").supervisor({
-                url: control_url,
-                screen: $("#win-server-info"),
-                template: nunjucks_env.getTemplate("update-config", true)
-            }).action();
-            var table_handlers = function() {
+            var table_event_bind = function() {
                 $("button.action").supervisor({
                     url: control_url
                 }).action();
@@ -208,16 +202,23 @@
                 }).action();
             };
             table.on('init.dt', function () {
-                table_handlers();
+                $("button#btn-update-config-action").supervisor({
+                    url: control_url,
+                    screen: $("#win-server-info"),
+                    template: nunjucks_env.getTemplate("update-config", true)
+                }).action();
+
                 $("button.startall,.restartall,.stopall").supervisor({
                     url: control_url,
-                }).action()
+                }).action();
+
+                table_event_bind();
             });
             var autorefresh = parseInt($.urlParam('autorefresh', 5));
             if (autorefresh !== 0 && !isNaN(autorefresh)) {
                 setInterval( function () {
                     $('#supervisor').DataTable().ajax.reload(function (data) {
-                        table_handlers();
+                        table_event_bind();
                     });
                 }, autorefresh * 1000);
             }
