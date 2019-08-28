@@ -2,19 +2,12 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
-from dashvisor import backends
+from dashvisor.backends import backend
 from dashvisor.utils import login_admin_only_required
-
-
-def get_backend(request):
-    if backends.backend.request is None:
-        backends.backend(request)
-    return backends.backend
 
 
 @login_admin_only_required
 def dashboard(request):
-    backend = get_backend(request)
     backend.refresh()
     return render_to_response(
         'dashvisor/dashboard.html',
@@ -32,8 +25,7 @@ def dashboard(request):
 
 @login_admin_only_required
 def control(request, server_alias, process, action):
-    backend = get_backend(request)
-    method = getattr(request, request.method)
+    request_method = getattr(request, request.method)
     if action not in ('start', 'stop', 'restart',
                       'tail',
                       'start_all',
@@ -43,8 +35,8 @@ def control(request, server_alias, process, action):
     action_kwargs = {}
     attrs = {'offset': int, 'length': int}
     for name in attrs:
-        if name in method:
-            action_kwargs[name] = attrs[name](method[name])
+        if name in request_method:
+            action_kwargs[name] = attrs[name](request_method[name])
     action_args = []
     if process != '*':
         action_args.append(process)
@@ -78,7 +70,6 @@ def _get_server_status(request, server, action):
 
 @login_admin_only_required
 def query(request):
-    backend = get_backend(request)
     server_alias = request.GET.get('server_alias', '*')
     action = request.GET.get('action')
     data = {'data': []}
