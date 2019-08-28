@@ -139,6 +139,8 @@ class Server(object):
             supervisor.addProcessGroup(gname)
             # log(gname, "added process group")
 
+        return {'added': added, 'changed': changed, 'removed': removed}
+
     def start_all(self):
         return self.connection.supervisor.startAllProcesses()
 
