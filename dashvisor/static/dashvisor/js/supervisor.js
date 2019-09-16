@@ -53,9 +53,10 @@
             $("button.control-all").prop("disabled", true);
             $ele.find("span.spinner-grow").removeClass('d-none');
 
-        } else if (action === 'update_config') {
-            $ele.find("span.spinner-border").removeClass('d-none');
-            $ele.find("img").addClass("d-none")
+        } else if (['supervisor_update', 'supervisor_restart'].indexOf(action) !== -1) {
+            var $parents = $ele.parents();
+            $parents.find("span.spinner-border").removeClass('d-none');
+            $parents.find("img").addClass("d-none")
         }
     };
 
@@ -65,11 +66,14 @@
                 $ele.find("span.spinner-grow").addClass('d-none');
                 $("button.control-all").prop("disabled", false);
             }, parseInt($.urlParam('autorefresh', 5)) * 1000)
-
-        } else if (action === 'update_config') {
-            $ele.prop("disabled", false);
-            $ele.find("span.spinner-border").addClass('d-none');
-            $ele.find("img").removeClass("d-none");
+        } else if (action === 'supervisor_restart') {
+            $parents = $ele.parents();
+            $parents.find("span.spinner-border").addClass('d-none');
+            $parents.find("img").removeClass("d-none");
+        } else if (action === 'supervisor_update') {
+            var $parents = $ele.parents();
+            $parents.find("span.spinner-border").addClass('d-none');
+            $parents.find("img").removeClass("d-none");
             var $toast = this.config.screen.toast("show");
             $toast.find("strong.title").text("Supervisor (update)");
             var $toast_body = $toast.find(".toast-body");

@@ -3,16 +3,8 @@
 {% block content %}
     {% include 'dashvisor/toast.html' %}
     <div class="container">
-        <div class="clearfix control-bar">
-        <button class="btn btn-outline-primary btn-sm update_config float-left"
-                data-toggle="tooltip" data-placement="bottom" title="supervisor update"
-                id="btn-update-config-action"
-                data-action="update_config"
-                data-server="*"
-                data-process="*">
-            <img src="{% static 'dashvisor/images/sync.svg' %}" alt="icon name">
-            <span class="spinner-border spinner-border-sm d-none"></span>
-        </button>
+        <div class="clearfix control-bar mb-2">
+        {% include 'dashvisor/g-action-dropdown.html' %}
         </div>
         <table id="supervisor" class="table table-striped table-condensed" style="width:100%">
             <thead>
@@ -202,10 +194,14 @@
                 }).action();
             };
             table.on('init.dt', function () {
-                $("button#btn-update-config-action").supervisor({
+                $("#btn-g-action-update").supervisor({
                     url: control_url,
                     screen: $("#win-server-info"),
                     template: nunjucks_env.getTemplate("update-config", true)
+                }).action();
+
+                $("#btn-g-action-restart").supervisor({
+                    url: control_url
                 }).action();
 
                 $("button.startall,.restartall,.stopall").supervisor({

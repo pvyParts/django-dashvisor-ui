@@ -9,12 +9,9 @@ pre.content {
     padding: 5px;
 }
 
-button.update_config > img {
+#g-action-spin {
     width: 16px;
-    height: 17px;
-}
-div.control-bar {
-    margin: 2px;
+    height: 16px;
 }
 
 #win-server-info {

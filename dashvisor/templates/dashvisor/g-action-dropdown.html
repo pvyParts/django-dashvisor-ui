@@ -1,0 +1,29 @@
+{% load staticfiles %}
+<div class="btn-group dropup">
+    <button type="button" class="btn btn-light btn-sm d-flex align-items-center">
+        <img src="{% static 'dashvisor/images/sync.svg' %}" alt="icon name" id="g-action-spin">
+         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        <span class="ml-1">Supervisor</span>
+    </button>
+    <button type="button" class="btn btn-light btn-sm dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+        <span class="sr-only">action</span>
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="#"
+           id="btn-g-action-update"
+           data-action="supervisor_update"
+           data-server="*"
+           data-process="*">
+             update
+        </a>
+         <a class="dropdown-item" href="#"
+           id="btn-g-action-restart"
+           data-action="supervisor_restart"
+           data-server="*"
+           data-process="*">
+             restart
+        </a>
+    </div>
+</div>
