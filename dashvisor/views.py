@@ -29,8 +29,10 @@ def dashboard(request):
 
 
 class ControlAction(list):
-    def __init__(self):
+    def __init__(self, request, name):
         super(ControlAction, self).__init__()
+        self.request = request
+        self.name = name
         self.extend([
             'start',
             'stop',
@@ -43,31 +45,41 @@ class ControlAction(list):
             'supervisor_restart',
         ])
 
-    def check_perm_or_404(self, action):
-        if action not in self:
+    @property
+    def args(self):
+        return []
+
+    @property
+    def kwargs(self):
+        kwargs = {}
+        method = getattr(self.request, self.request.method)
+        attrs = {'offset': int, 'length': int}
+        for name in attrs:
+            if name in method:
+                kwargs[name] = attrs[name](method[name])
+        return kwargs
+
+    def check_perm_or_404(self):
+        if self.name not in self:
             raise Http404
 
 
 @login_admin_only_required
 def control(request, server_alias, process, action):
-    request_method = getattr(request, request.method)
-    ControlAction().check_perm_or_404(action)
-    action_kwargs = {}
-    attrs = {'offset': int, 'length': int}
-    for name in attrs:
-        if name in request_method:
-            action_kwargs[name] = attrs[name](request_method[name])
-    action_args = []
+    action = ControlAction(request, action)
+    action.check_perm_or_404()
+    action_args = action.args
     if process != '*':
         action_args.append(process)
+    action_kwargs = action.kwargs
     if server_alias == '*':
         result = []
         for server_alias in backend.servers:
             server = backend.servers[server_alias]
-            func = getattr(server, action)
+            func = getattr(server, action.name)
             result.append(func(*action_args, **action_kwargs))
     else:
-        func = getattr(backend.servers[server_alias], action)
+        func = getattr(backend.servers[server_alias], action.name)
         result = func(*action_args, **action_kwargs)
     return JsonResponse({
         'result': result,
