@@ -72,15 +72,11 @@ class Server(object):
             raise
 
     @ExceptionHandler(CannotSendRequest)
-    def reload_config(self):
-        try:
-            return self.connection.supervisor.reloadConfig()
-        except Fault as e:
-            if e.faultString.startswith('CANT_REREAD'):
-                return False
-            raise
+    def supervisor_restart(self):
+        """supervisor restart"""
+        return self.connection.supervisor.restart()
 
-    def update_config(self, arg=''):
+    def supervisor_update(self, arg=''):
         supervisor = self.connection.supervisor
         try:
             result = supervisor.reloadConfig()

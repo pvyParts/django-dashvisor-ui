@@ -39,8 +39,8 @@ class ControlAction(list):
             'start_all',
             'restart_all',
             'stop_all',
-            'update_config',
-            'reload_config'
+            'supervisor_update',
+            'supervisor_restart',
         ])
 
     def check_perm_or_404(self, action):
