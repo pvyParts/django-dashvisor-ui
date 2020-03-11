@@ -1,19 +1,9 @@
+import http.client as httpclient
+import xmlrpc.client as xmlrpclient
 from collections import OrderedDict
+from urllib.parse import urlparse
 
 from supervisor import xmlrpc
-
-try:
-    import xmlrpc.client as xmlrpclib
-except ImportError:
-    import xmlrpclib
-try:
-    import http.client as httplib
-except ImportError:
-    import httplib
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urlparse
 
 
 class ExceptionHandler(object):
@@ -35,12 +25,12 @@ class ExceptionHandler(object):
 
 class Server(object):
     def __init__(self, connection_string, id):
-        self.name = urlparse.urlparse(connection_string).hostname
-        self.connection = xmlrpclib.ServerProxy(connection_string)
+        self.name = urlparse(connection_string).hostname
+        self.connection = xmlrpclient.ServerProxy(connection_string)
         self.status = OrderedDict()
         self.id = id
 
-    @ExceptionHandler(httplib.CannotSendRequest)
+    @ExceptionHandler(httpclient.CannotSendRequest)
     def refresh(self):
         self.status = OrderedDict(("%s:%s" % (i['group'], i['name']), i)
                                   for i in self.connection.supervisor.getAllProcessInfo())
@@ -50,16 +40,16 @@ class Server(object):
             if program['name'] != program['group']:
                 program['human_name'] = "%s:%s" % (program['group'], program['name'])
 
-    @ExceptionHandler(httplib.CannotSendRequest)
+    @ExceptionHandler(httpclient.CannotSendRequest)
     def stop(self, name):
         try:
             return self.connection.supervisor.stopProcess(name)
-        except xmlrpclib.Fault as e:
+        except xmlrpclient.Fault as e:
             if e.faultString.startswith('NOT_RUNNING'):
                 return False
             raise
 
-    @ExceptionHandler(httplib.CannotSendRequest,
+    @ExceptionHandler(httpclient.CannotSendRequest,
                       defaults={'content': '', 'size': 0, 'overflow': False})
     def tail(self, name, offset=-1, length=None):
         if length is None:
@@ -67,19 +57,19 @@ class Server(object):
         try:
             result = self.connection.supervisor.tailProcessLog(name, offset, length)
             return dict(zip(('content', 'size', 'overflow'), result))
-        except xmlrpclib.Fault as e:
+        except xmlrpclient.Fault as e:
             raise
 
-    @ExceptionHandler(httplib.CannotSendRequest)
+    @ExceptionHandler(httpclient.CannotSendRequest)
     def start(self, name):
         try:
             return self.connection.supervisor.startProcess(name)
-        except xmlrpclib.Fault as e:
+        except xmlrpclient.Fault as e:
             if e.faultString.startswith('ALREADY_STARTED'):
                 return False
             raise
 
-    @ExceptionHandler(httplib.CannotSendRequest)
+    @ExceptionHandler(httpclient.CannotSendRequest)
     def supervisor_restart(self):
         """supervisor restart"""
         return self.connection.supervisor.restart()
@@ -88,7 +78,7 @@ class Server(object):
         supervisor = self.connection.supervisor
         try:
             result = supervisor.reloadConfig()
-        except xmlrpclib.Fault as e:
+        except xmlrpclient.Fault as e:
             if e.faultCode == xmlrpc.Faults.SHUTDOWN_STATE:
                 raise Exception('ERROR: already shutting down')
             else:
