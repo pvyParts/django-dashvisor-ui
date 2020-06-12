@@ -30,7 +30,8 @@ class Server(object):
         self.status = OrderedDict()
         self.id = id
 
-    @ExceptionHandler(httpclient.CannotSendRequest)
+    @ExceptionHandler((httpclient.CannotSendRequest,
+                       httpclient.ResponseNotReady))
     def refresh(self):
         self.status = OrderedDict(("%s:%s" % (i['group'], i['name']), i)
                                   for i in self.connection.supervisor.getAllProcessInfo())
