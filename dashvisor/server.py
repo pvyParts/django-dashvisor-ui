@@ -49,7 +49,8 @@ class Server(object):
                 return False
             raise
 
-    @ExceptionHandler(httpclient.CannotSendRequest,
+    @ExceptionHandler((httpclient.CannotSendRequest,
+                       httpclient.ResponseNotReady),
                       defaults={'content': '', 'size': 0, 'overflow': False})
     def tail(self, name, offset=-1, length=None):
         if length is None:
