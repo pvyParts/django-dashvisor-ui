@@ -36,7 +36,9 @@ class ExceptionHandler(object):
 class Server(object):
     def __init__(self, connection_string, id):
         self.name = urlparse.urlparse(connection_string).hostname
-        self.connection = xmlrpclib.ServerProxy(connection_string)
+        self.connection = xmlrpclib.ServerProxy('http://127.0.0.1',
+                               transport=xmlrpc.SupervisorTransport(
+                                    None, None, serverurl=connection_string))
         self.status = OrderedDict()
         self.id = id
 

@@ -1,6 +1,6 @@
 import socket
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, JsonResponse
 from django.shortcuts import render_to_response
 
@@ -91,7 +91,7 @@ def _get_server_status(request, server, action):
     if action == 'refresh':
         server.refresh()
     status = server.status.values()
-    status.sort(key=lambda x: (x['group'], x['name']))
+    #status.sort(key=lambda x: (x['group'], x['name']))
     for process in status:
         process['server'] = {
             'name': "{0.name} ({0.id})".format(server),
@@ -106,7 +106,7 @@ def query(request):
     action = request.GET.get('action')
     data = {'data': []}
     if server_alias == "*":
-        for server in backend.servers.itervalues():
+        for k, server in backend.servers.items():
             status = _get_server_status(request, server, action)
             data['data'].extend(status)
     else:
